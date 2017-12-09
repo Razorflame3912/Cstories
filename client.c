@@ -17,27 +17,41 @@ int main(){
   int sem = semget(KEY,1,0666);
   int sharedmem = shmget(KEY,sizeof(char *),0666);
 
-  char * lastline = shmat(sharedmem,0,0);
-  printf("Last contribution: %s\n",lastline);
+  struct sembuf b[1];
+  b[0].sem_op = -1;
+  b[0].sem_num = 0;
+  b[0].sem_flg = SEM_UNDO;
+  semop(sem,b,1);
 
-  char newline[256];
+  char * lastline = shmat(sharedmem,0,0);
+  int x = semctl(sem,0,GETVAL);
+  printf("%d\n",x);
+  printf("Last contribution: %s\n", lastline);
+
+
+  
+
+  char * newline = malloc(256);
   printf("New line: ");
-  scanf("%s",newline);
+  scanf(" %[^\t\n]s ",newline);
+
+
 
   int file = open("story.txt",O_WRONLY | O_APPEND);
-  write(file,newline,sizeof(newline));
+  strcat(newline," ");
+  write(file,newline,strlen(newline));
 
-  struct sembuf * buffer;
-  buffer.sem_op = -1;
-  buffer.sem_num = 0;
-  buffer.sem_flags = SEM_UNDO;
-  semop(sem,buffer,1);
 
-  lastline = newline;
 
-  buffer.sem_op = 1;
-  semop(sem,buffer,1);
-  
+  sprintf(lastline,"%s\n",newline);
+  shmdt(lastline);
+ 
+
+  b[0].sem_op = 1;
+  semop(sem,b,1);
+
+
+
   
   
   
