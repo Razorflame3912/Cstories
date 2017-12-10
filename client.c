@@ -22,10 +22,15 @@ int main(){
   b[0].sem_num = 0;
   b[0].sem_flg = SEM_UNDO;
   semop(sem,b,1);
-
-  char * lastline = shmat(sharedmem,0,0);
   int x = semctl(sem,0,GETVAL);
-  printf("%d\n",x);
+
+  int file = open("story.txt",O_RDONLY);
+  int * lastlinesize = shmat(sharedmem,0,0);
+  lseek(file,(-1* *lastlinesize),SEEK_END);
+  char lastline[256];
+  read(file,lastline,*lastlinesize);
+  close(file);
+  //printf("%d\n",x);
   printf("Last contribution: %s\n", lastline);
 
 
@@ -37,14 +42,15 @@ int main(){
 
 
 
-  int file = open("story.txt",O_WRONLY | O_APPEND);
+  file = open("story.txt",O_WRONLY | O_APPEND);
   strcat(newline," ");
-  write(file,newline,strlen(newline));
+  int newlinesize = strlen(newline);
+  write(file,newline,newlinesize);
+  close(file);
 
 
-
-  sprintf(lastline,"%s\n",newline);
-  shmdt(lastline);
+  *lastlinesize = newlinesize;
+  shmdt(lastlinesize);
  
 
   b[0].sem_op = 1;

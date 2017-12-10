@@ -26,7 +26,7 @@ int main(int argc, char * argv[]){
     semctl(sem,0,SETVAL,1);
     printf("semaphore created\n");
     
-    sharedmem = shmget(KEY,256,IPC_CREAT | IPC_EXCL | 0666);
+    sharedmem = shmget(KEY,sizeof(size_t),IPC_CREAT | IPC_EXCL | 0666);
     if(sharedmem == -1){
       printf("shared memory already exists\n");
       return 0;
