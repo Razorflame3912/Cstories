@@ -33,17 +33,14 @@ int main(){
   //printf("%d\n",x);
   printf("Last contribution: %s\n", lastline);
 
-
   
-
   char * newline = malloc(256);
   printf("New line: ");
   scanf(" %[^\t\n]s ",newline);
 
 
-
   file = open("story.txt",O_WRONLY | O_APPEND);
-  strcat(newline," ");
+  strcat( newline, "\n" );
   int newlinesize = strlen(newline);
   write(file,newline,newlinesize);
   close(file);

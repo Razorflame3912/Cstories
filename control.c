@@ -20,25 +20,25 @@ int main(int argc, char * argv[]){
   if(!strncmp(argv[1],"-c", 2)){
     sem = semget(KEY,1,0666 | IPC_CREAT | IPC_EXCL);
     if(sem == -1){
-      printf("semaphore already exists\n");
+      printf("Semaphore already exists\n");
       return 0;
     }
     semctl(sem,0,SETVAL,1);
-    printf("semaphore created\n");
+    printf("Semaphore created\n");
     
     sharedmem = shmget(KEY,sizeof(size_t),IPC_CREAT | IPC_EXCL | 0666);
     if(sharedmem == -1){
-      printf("shared memory already exists\n");
+      printf("Shared memory already exists\n");
       return 0;
     }
-    printf("shared memory created\n");
+    printf("Shared memory created\n");
     
     file = open("story.txt",O_CREAT|O_EXCL|O_TRUNC,0666);
     if(file == -1){
-      printf("file already exists\n");
+      printf("File already exists\n");
       return 0;
     } 
-    printf("file created\n");
+    printf("File created\n");
    
     semctl(sem,0,SETVAL,1);
     
@@ -58,13 +58,13 @@ int main(int argc, char * argv[]){
 
     sharedmem = shmget(KEY,sizeof(char *),0666);
     shmctl(sharedmem,IPC_RMID,NULL);
-    printf("shared memory removed\n");
+    printf("Shared memory removed\n");
 
 
 
     sem = semget(KEY,1,0666);
     semctl(sem,0,IPC_RMID,0);
-    printf("semaphore removed\n");
+    printf("Semaphore removed\n");
   }
   else{
     printf("Unrecognized input.\n");

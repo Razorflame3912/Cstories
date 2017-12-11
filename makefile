@@ -8,7 +8,18 @@ client.o: client.c
 control.o: control.c
 	gcc -c control.c
 
+view: all
+	./control -v
+
 clean:
+	./control -r
+	rm -f story.txt
+	rm -f *~
+	rm -f *.o
+	rm -f client
+	rm -f control
+
+clear:
 	./control -r
 	rm -f story.txt
 	rm -f *~
